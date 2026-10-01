@@ -29,27 +29,29 @@
         /* Style for the date and time box */
         #datetime-box {
             position: absolute;
-            top: 20px;    /* Moved to top */
-            left: 20px;   /* Kept on the left */
-            background-color: rgba(0, 0, 0, 0.7); 
+            top: 20px;    
+            left: 20px;   
+            background-color: rgba(0, 0, 0, 0.75); 
             color: #ffffff;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 8px;
             font-size: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
             text-align: left;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         #datetime-box .nepali-date {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            color: #ffd700; /* Gold color for Nepali date */
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Default image set to 6.jpeg (Kartik) -->
-        <img id="calendarImage" src="6.jpeg" alt="Current Month Calendar">
+        <!-- Default image set to 11.jpeg (Magh) -->
+        <img id="calendarImage" src="11.jpeg" alt="Current Month Calendar">
         
         <!-- This is the box that will show the date and time -->
         <div id="datetime-box">
@@ -60,28 +62,36 @@
     </div>
 
     <script>
-        // --- 1. CALENDAR IMAGE LOGIC (Corrected Mapping) ---
+        // --- 1. CALENDAR IMAGE LOGIC (Matching your exact files) ---
         const today = new Date();
         const month = today.getMonth(); // 0 = Jan, 9 = Oct, etc.
         const year = today.getFullYear(); 
 
-        let imageToShow = "6.jpeg"; // Default fallback
+        // Map the English months directly to the file names based on your screenshots
+        const imageMap2026 = {
+            3: "2.jpeg",  // April -> Baisakh
+            4: "3.jpeg",  // May -> Jestha
+            5: "4.jpeg",  // June -> Ashadh
+            6: "5.jpeg",  // July -> Shrawan
+            7: "7.jpeg",  // August -> Bhadra
+            8: "8.jpeg",  // September -> Ashwin
+            9: "9.jpeg",  // October -> Kartik
+            10: "6.jpeg", // November -> Mangsir (Based on your last screenshot)
+            11: "10.jpeg" // December -> Poush
+        };
 
-        if (year === 2026) {
-            if (month === 3) imageToShow = "2.jpeg";  // April -> Baisakh (Image 2)
-            if (month === 4) imageToShow = "3.jpeg";  // May -> Jestha (Image 3)
-            if (month === 5) imageToShow = "4.jpeg";  // June -> Ashadh (Image 4)
-            if (month === 6) imageToShow = "5.jpeg";  // July -> Shrawan (Image 5)
-            if (month === 7) imageToShow = "6.jpeg";  // August -> Bhadra (Image 6)
-            if (month === 8) imageToShow = "7.jpeg";  // September -> Ashwin (Image 7)
-            if (month === 9) imageToShow = "8.jpeg";  // October -> Kartik (Image 8)
-            if (month === 10) imageToShow = "9.jpeg"; // November -> Mangsir (Image 9)
-            if (month === 11) imageToShow = "10.jpeg"; // December -> Poush (Image 10)
-        } 
-        else if (year === 2027) {
-            if (month === 0) imageToShow = "11.jpeg"; // January -> Magh (Image 11)
-            if (month === 1) imageToShow = "1.jpeg";  // February -> Falgun (Image 1)
-            if (month === 2) imageToShow = "12.jpeg"; // March -> Chaitra (Image 12)
+        const imageMap2027 = {
+            0: "11.jpeg", // January -> Magh (Based on your screenshot)
+            1: "1.jpeg",  // February -> Falgun
+            2: "12.jpeg"  // March -> Chaitra
+        };
+
+        let imageToShow = "11.jpeg"; // Default
+
+        if (year === 2026 && imageMap2026[month]) {
+            imageToShow = imageMap2026[month];
+        } else if (year === 2027 && imageMap2027[month]) {
+            imageToShow = imageMap2027[month];
         }
 
         document.getElementById("calendarImage").src = imageToShow;
@@ -89,6 +99,7 @@
 
         // --- 2. LIVE DATE AND TIME LOGIC ---
         
+        // Nepali month names mapping
         const nepaliMonths = ["Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
         const nepaliDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
 
@@ -101,24 +112,39 @@
             let nepaliMonthIndex = 0;
             let nepaliDay = 1;
 
+            // Based on the dates in your calendar images
             if (y === 2026) {
-                if (m === 3) { nepaliMonthIndex = 0; nepaliDay = d - 13; } 
-                else if (m === 4) { nepaliMonthIndex = 1; nepaliDay = d - 14; } 
-                else if (m === 5) { nepaliMonthIndex = 2; nepaliDay = d - 14; } 
-                else if (m === 6) { nepaliMonthIndex = 3; nepaliDay = d - 16; } 
-                else if (m === 7) { nepaliMonthIndex = 4; nepaliDay = d - 16; } 
-                else if (m === 8) { nepaliMonthIndex = 5; nepaliDay = d - 16; } 
-                else if (m === 9) { nepaliMonthIndex = 6; nepaliDay = d - 17; } // October -> Kartik
-                else if (m === 10) { nepaliMonthIndex = 7; nepaliDay = d - 16; } 
-                else if (m === 11) { nepaliMonthIndex = 8; nepaliDay = d - 16; } 
+                if (m === 9) { // October -> Kartik
+                    nepaliMonthIndex = 6; // Kartik
+                    nepaliDay = d + 14; 
+                }
+                else if (m === 10) { // November -> Mangsir
+                    nepaliMonthIndex = 7; // Mangsir
+                    nepaliDay = d + 16; 
+                }
+                else if (m === 11) { // December -> Poush
+                    nepaliMonthIndex = 8; // Poush
+                    nepaliDay = d + 16; 
+                }
             } else if (y === 2027) {
-                if (m === 0) { nepaliMonthIndex = 9; nepaliDay = d - 14; } 
-                else if (m === 1) { nepaliMonthIndex = 10; nepaliDay = d - 12; } 
-                else if (m === 2) { nepaliMonthIndex = 11; nepaliDay = d - 14; } 
+                if (m === 0) { // January -> Magh
+                    nepaliMonthIndex = 9; // Magh
+                    nepaliDay = d + 16; 
+                }
+                else if (m === 1) { // February -> Falgun
+                    nepaliMonthIndex = 10; // Falgun
+                    nepaliDay = d + 17; 
+                }
+                else if (m === 2) { // March -> Chaitra
+                    nepaliMonthIndex = 11; // Chaitra
+                    nepaliDay = d + 15; 
+                }
             }
 
-            if (nepaliDay <= 0) { nepaliDay = 1; } 
+            // Handle rollovers (if the day goes past the month end)
+            if (nepaliDay > 32) { nepaliDay -= 32; } 
 
+            // Convert numbers to Nepali digits
             let nepaliDayStr = nepaliDay.toString().split('').map(num => nepaliDigits[num]).join('');
             let nepaliYearStr = nepaliYear.toString().split('').map(num => nepaliDigits[num]).join('');
 
@@ -128,14 +154,18 @@
         function updateClock() {
             const now = new Date();
             
+            // English Date
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("englishDate").innerText = now.toLocaleDateString('en-US', options);
 
+            // Nepali Date
             document.getElementById("nepaliDate").innerText = getNepaliDate(now);
 
+            // Time
             document.getElementById("time").innerText = now.toLocaleTimeString('en-US');
         }
 
+        // Run immediately and update every second
         updateClock();
         setInterval(updateClock, 1000);
 
