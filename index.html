@@ -3,58 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Nepali Calendar</title>
+    <title>Live Clock & Watch</title>
     <style>
         html, body { 
             margin: 0; padding: 0; height: 100vh; overflow: hidden; 
-            background-color: #121212; font-family: Arial, sans-serif; color: #ffffff;
+            background-color: #121212; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff;
         }
         body {
-            display: flex; justify-content: center; align-items: center;
-            padding: 15px; box-sizing: border-box; gap: 20px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            gap: 50px; /* Space between the text and the watch */
         }
         
-        /* --- LEFT SIDEBAR (Clock + Analog Watch) --- */
-        #left-sidebar {
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            align-items: center; 
-            height: 100%; 
-            width: 280px; 
-            flex-shrink: 0; 
-            gap: 25px;
-        }
-
         /* --- DIGITAL DATE AND TIME BOX --- */
         #datetime-box {
-            background-color: rgba(40, 40, 40, 0.95); 
+            background-color: rgba(30, 30, 30, 0.95); 
             color: #ffffff; 
-            padding: 20px; 
-            border-radius: 15px; 
-            font-size: 22px; 
-            line-height: 1.5; 
+            padding: 30px 40px; 
+            border-radius: 20px; 
+            font-size: 28px; 
+            line-height: 1.6; 
             text-align: center;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.8); 
-            border: 1px solid #444;
-            width: 100%; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.8); 
+            border: 1px solid #333;
             box-sizing: border-box;
+            min-width: 350px;
         }
+        
         #datetime-box .nepali-date {
-            font-size: 32px; 
+            font-size: 42px; 
             font-weight: bold; 
-            color: #ffd700;
+            color: #ffd700; /* Gold */
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        #datetime-box .english-date {
+            font-size: 22px;
+            color: #cccccc;
             margin-bottom: 10px;
+        }
+
+        #datetime-box .time-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 2px;
         }
 
         /* --- ANALOG WATCH STYLING --- */
         .analog-clock {
-            width: 220px;
-            height: 220px;
+            width: 320px;
+            height: 320px;
             border-radius: 50%;
-            background: radial-gradient(circle, #2a2a2a, #1a1a1a);
-            border: 6px solid #ffd700; /* Gold border */
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3), inset 0 0 20px rgba(0,0,0,0.8);
+            background: radial-gradient(circle, #2a2a2a, #0a0a0a);
+            border: 8px solid #ffd700; /* Gold border */
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2), inset 0 0 30px rgba(0,0,0,0.9);
             position: relative;
         }
         
@@ -63,7 +68,7 @@
             content: '';
             position: absolute;
             top: 50%; left: 50%;
-            width: 12px; height: 12px;
+            width: 16px; height: 16px;
             background: #ffd700;
             border-radius: 50%;
             transform: translate(-50%, -50%);
@@ -77,14 +82,14 @@
             height: 100%;
             text-align: center;
             transform: rotate(var(--rotation));
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
             color: #ffffff;
         }
         .number span {
             display: inline-block;
             transform: rotate(calc(-1 * var(--rotation)));
-            padding-top: 10px;
+            padding-top: 15px;
         }
 
         /* Clock Hands */
@@ -98,100 +103,96 @@
         }
         
         .hour-hand {
-            width: 6px;
-            height: 60px;
+            width: 8px;
+            height: 85px;
             background-color: #ffffff;
-            margin-left: -3px;
+            margin-left: -4px;
         }
         
         .minute-hand {
-            width: 4px;
-            height: 85px;
+            width: 5px;
+            height: 120px;
             background-color: #ffffff;
-            margin-left: -2px;
+            margin-left: -2.5px;
         }
         
         .second-hand {
-            width: 2px;
-            height: 95px;
+            width: 3px;
+            height: 135px;
             background-color: #ffd700; /* Gold second hand */
-            margin-left: -1px;
+            margin-left: -1.5px;
         }
 
-        /* --- MIDDLE CALENDAR --- */
-        .container {
-            position: relative; height: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.8); background: #1e1e1e;
-            flex-grow: 1; max-width: 700px; border-radius: 10px;
-            overflow: hidden; padding: 10px;
-        }
-        .container img { 
-            max-width: 100%; max-height: 90%; object-fit: contain; display: block;
-        }
-        
-        /* --- CONTROLS --- */
-        .controls-container {
-            display: flex; gap: 10px; width: 100%; margin-top: 10px;
-            justify-content: center; align-items: center;
-        }
+        /* --- AUDIO BUTTON --- */
         #audio-btn {
-            background-color: #ffd700; color: #000; border: none; padding: 8px 15px;
-            border-radius: 5px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5); transition: background 0.3s;
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            background-color: #ffd700; 
+            color: #000; 
+            border: none; 
+            padding: 12px 25px;
+            border-radius: 8px; 
+            font-weight: bold; 
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5); 
+            transition: background 0.3s, transform 0.2s;
         }
-        #audio-btn:hover { background-color: #ffed4a; }
-        
-        /* Hide the right sidebar entirely since images are removed */
-        #right-sidebar { display: none; }
-        
-        @media (max-width: 900px) {
-            #left-sidebar { display: none; }
-            .container { max-width: 100%; }
-            .container img { max-height: 80%; }
+        #audio-btn:hover { background-color: #ffed4a; transform: scale(1.05); }
+
+        /* Mobile responsiveness */
+        @media (max-width: 800px) {
+            body {
+                flex-direction: column;
+                gap: 30px;
+            }
+            .analog-clock {
+                width: 220px;
+                height: 220px;
+            }
+            #datetime-box {
+                padding: 20px;
+                min-width: 250px;
+            }
+            #datetime-box .nepali-date { font-size: 32px; }
+            #datetime-box .time-text { font-size: 28px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR: Date, Time, and Analog Clock -->
-    <div id="left-sidebar">
-        <div id="datetime-box">
-            <div class="nepali-date" id="nepaliDate">Loading...</div>
-            <div id="englishDate">Loading...</div>
-            <div id="time">Loading...</div>
-        </div>
-
-        <!-- The Analog Watch -->
-        <div class="analog-clock" id="analogClock">
-            <!-- Numbers 1 to 12 -->
-            <div class="number" style="--rotation: 30deg;"><span>1</span></div>
-            <div class="number" style="--rotation: 60deg;"><span>2</span></div>
-            <div class="number" style="--rotation: 90deg;"><span>3</span></div>
-            <div class="number" style="--rotation: 120deg;"><span>4</span></div>
-            <div class="number" style="--rotation: 150deg;"><span>5</span></div>
-            <div class="number" style="--rotation: 180deg;"><span>6</span></div>
-            <div class="number" style="--rotation: 210deg;"><span>7</span></div>
-            <div class="number" style="--rotation: 240deg;"><span>8</span></div>
-            <div class="number" style="--rotation: 270deg;"><span>9</span></div>
-            <div class="number" style="--rotation: 300deg;"><span>10</span></div>
-            <div class="number" style="--rotation: 330deg;"><span>11</span></div>
-            <div class="number" style="--rotation: 0deg;"><span>12</span></div>
-            
-            <!-- Hands -->
-            <div class="hand hour-hand" id="hourHand"></div>
-            <div class="hand minute-hand" id="minuteHand"></div>
-            <div class="hand second-hand" id="secondHand"></div>
-        </div>
+    <!-- LEFT SIDE: Digital Date and Time -->
+    <div id="datetime-box">
+        <div class="nepali-date" id="nepaliDate">Loading...</div>
+        <div class="english-date" id="englishDate">Loading...</div>
+        <div class="time-text" id="time">Loading...</div>
     </div>
 
-    <!-- MIDDLE: Calendar -->
-    <div class="container">
-        <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
-        <div class="controls-container">
-            <button id="audio-btn" onclick="startAudio()">🔊 Enable Voice Time</button>
-        </div>
+    <!-- RIGHT SIDE: Analog Watch -->
+    <div class="analog-clock" id="analogClock">
+        <!-- Numbers 1 to 12 -->
+        <div class="number" style="--rotation: 30deg;"><span>1</span></div>
+        <div class="number" style="--rotation: 60deg;"><span>2</span></div>
+        <div class="number" style="--rotation: 90deg;"><span>3</span></div>
+        <div class="number" style="--rotation: 120deg;"><span>4</span></div>
+        <div class="number" style="--rotation: 150deg;"><span>5</span></div>
+        <div class="number" style="--rotation: 180deg;"><span>6</span></div>
+        <div class="number" style="--rotation: 210deg;"><span>7</span></div>
+        <div class="number" style="--rotation: 240deg;"><span>8</span></div>
+        <div class="number" style="--rotation: 270deg;"><span>9</span></div>
+        <div class="number" style="--rotation: 300deg;"><span>10</span></div>
+        <div class="number" style="--rotation: 330deg;"><span>11</span></div>
+        <div class="number" style="--rotation: 0deg;"><span>12</span></div>
+        
+        <!-- Hands -->
+        <div class="hand hour-hand" id="hourHand"></div>
+        <div class="hand minute-hand" id="minuteHand"></div>
+        <div class="hand second-hand" id="secondHand"></div>
     </div>
+
+    <!-- Voice Enable Button -->
+    <button id="audio-btn" onclick="startAudio()">🔊 Enable Voice Time</button>
 
     <script>
         // --- 0. AUDIO VOICE LOGIC ---
@@ -199,10 +200,13 @@
 
         function startAudio() {
             if ('speechSynthesis' in window) {
+                // Wake up the audio engine
                 const silent = new SpeechSynthesisUtterance('');
                 window.speechSynthesis.speak(silent);
                 audioEnabled = true;
                 document.getElementById("audio-btn").style.display = "none"; 
+                
+                // Announce immediately that it is working
                 setTimeout(() => { speakTime(new Date()); }, 500);
             } else {
                 alert("Your browser does not support speech synthesis.");
@@ -257,7 +261,7 @@
 
         let lastSpokenMinute = -1; 
 
-        // --- 2. THE CLOCK AND CALENDAR UPDATER ---
+        // --- 2. THE CLOCK UPDATER ---
         function updateEverything() {
             const now = new Date();
             const nepaliInfo = getNepaliDateInfo(now);
@@ -286,14 +290,7 @@
             document.getElementById("minuteHand").style.transform = `rotate(${minuteDegrees}deg)`;
             document.getElementById("hourHand").style.transform = `rotate(${hourDegrees}deg)`;
 
-            // 3. Update Calendar Image
-            const newImageSrc = `${nepaliInfo.monthName}.jpeg`; 
-            const imgElement = document.getElementById("calendarImage");
-            if (!imgElement.src.includes(newImageSrc)) {
-                imgElement.src = newImageSrc;
-            }
-
-            // 4. Voice Announcement
+            // 3. Voice Announcement
             if (audioEnabled && currentSecond === 0 && currentMinute !== lastSpokenMinute) {
                 lastSpokenMinute = currentMinute;
                 speakTime(now);
