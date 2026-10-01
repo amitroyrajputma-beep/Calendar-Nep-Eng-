@@ -29,7 +29,7 @@
         /* Style for the date and time box */
         #datetime-box {
             position: absolute;
-            top: 20px;    /* Top Left Corner */
+            top: 20px;    
             left: 20px;   
             background-color: rgba(0, 0, 0, 0.75); 
             color: #ffffff;
@@ -51,7 +51,7 @@
 
     <div class="container">
         <!-- The source will be updated by JavaScript -->
-        <img id="calendarImage" src="Kartik.jpeg" alt="Current Month Calendar">
+        <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
         
         <!-- This is the box that will show the date and time -->
         <div id="datetime-box">
@@ -62,39 +62,57 @@
     </div>
 
     <script>
-        // --- 1. NEPALI DATE CALCULATION ---
-        const nepaliMonths = ["Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra", "Ashwin", "Kartik", "Mangsir", "Poush", "Magh", "Falgun", "Chaitra"];
+        // --- 1. ACCURATE NEPALI DATE DATA (2083 BS) ---
+        // This tells the code EXACTLY when every Nepali month starts and ends.
+        // Based on your calendar images.
+        const nepaliYearData = {
+            2083: [
+                { name: "Baisakh", start: "2026-04-14", end: "2026-05-14" },
+                { name: "Jestha",  start: "2026-05-15", end: "2026-06-14" },
+                { name: "Ashadh",  start: "2026-06-15", end: "2026-07-16" },
+                { name: "Shrawan", start: "2026-07-17", end: "2026-08-16" },
+                { name: "Bhadra",  start: "2026-08-17", end: "2026-09-16" },
+                { name: "Ashwin",  start: "2026-09-17", end: "2026-10-17" }, // <-- Today (Oct 1) falls here!
+                { name: "Kartik",  start: "2026-10-18", end: "2026-11-16" },
+                { name: "Mangsir", start: "2026-11-17", end: "2026-12-16" },
+                { name: "Poush",   start: "2026-12-17", end: "2027-01-16" },
+                { name: "Magh",    start: "2027-01-17", end: "2027-02-13" },
+                { name: "Falgun",  start: "2027-02-14", end: "2027-03-14" },
+                { name: "Chaitra", start: "2027-03-15", end: "2027-04-13" }
+            ]
+        };
+
         const nepaliDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
 
         function getNepaliDateInfo(date) {
             const y = date.getFullYear();
-            const m = date.getMonth(); // 0 = Jan, 9 = Oct, etc.
+            const m = date.getMonth();
             const d = date.getDate();
+            const currentDate = new Date(y, m, d); // Remove time for accurate comparison
 
             let nepaliYear = 2083;
             let nepaliMonthIndex = 0;
             let nepaliDay = 1;
 
-            // Exact mapping based on the start dates in your calendar images
-            if (y === 2026) {
-                if (m === 9) { nepaliMonthIndex = 6; nepaliDay = d + 17; } // Oct -> Kartik (Starts Oct 18)
-                else if (m === 10) { nepaliMonthIndex = 7; nepaliDay = d + 16; } // Nov -> Mangsir (Starts Nov 17)
-                else if (m === 11) { nepaliMonthIndex = 8; nepaliDay = d + 15; } // Dec -> Poush (Starts Dec 16)
-            } else if (y === 2027) {
-                if (m === 0) { nepaliMonthIndex = 9; nepaliDay = d + 16; } // Jan -> Magh (Starts Jan 17)
-                else if (m === 1) { nepaliMonthIndex = 10; nepaliDay = d + 13; } // Feb -> Falgun (Starts Feb 14)
-                else if (m === 2) { nepaliMonthIndex = 11; nepaliDay = d + 14; } // Mar -> Chaitra (Starts Mar 15)
+            // Loop through the data to find which month today falls into
+            for (let i = 0; i < nepaliYearData[2083].length; i++) {
+                const monthData = nepaliYearData[2083][i];
+                const startDate = new Date(monthData.start);
+                const endDate = new Date(monthData.end);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    nepaliMonthIndex = i;
+                    
+                    // Calculate the Nepali day by finding the difference in days
+                    const diffTime = Math.abs(currentDate - startDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    nepaliDay = diffDays + 1; // +1 because start date is Day 1
+                    break;
+                }
             }
 
-            // Handle end of Nepali month rollover
-            if (nepaliDay > 32) { 
-                nepaliDay -= 32; 
-                nepaliMonthIndex++; 
-                if (nepaliMonthIndex > 11) { nepaliMonthIndex = 0; nepaliYear++; }
-            } 
-
             return {
-                monthName: nepaliMonths[nepaliMonthIndex],
+                monthName: nepaliYearData[2083][nepaliMonthIndex].name,
                 day: nepaliDay,
                 year: nepaliYear
             };
@@ -118,12 +136,11 @@
             document.getElementById("nepaliDate").innerText = `${nepaliInfo.monthName} ${nepaliDayStr}, ${nepaliYearStr}`;
             document.getElementById("time").innerText = now.toLocaleTimeString('en-US');
 
-            // 2. UPDATE IMAGE BASED ON THE NEPALI MONTH NAME
-            // (Make sure your files on GitHub are renamed exactly like this)
+            // 2. UPDATE IMAGE BASED ON THE EXACT NEPALI MONTH
             const newImageSrc = `${nepaliInfo.monthName}.jpeg`; 
             const imgElement = document.getElementById("calendarImage");
             
-            // Only change the image source if it's different (prevents flickering)
+            // Change image if it's different
             if (!imgElement.src.includes(newImageSrc)) {
                 imgElement.src = newImageSrc;
             }
