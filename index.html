@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Nepali Calendar</title>
     <style>
-        /* Reset margins and lock the screen to prevent scrolling */
         html, body { 
             margin: 0; 
             padding: 0; 
             height: 100vh; 
-            overflow: hidden; /* Hides the scrollbar */
+            overflow: hidden; 
             background-color: #f0f0f0; 
             font-family: Arial, sans-serif;
         }
 
-        /* Main Layout */
         body {
             display: flex;
             justify-content: center;
@@ -25,19 +23,17 @@
             gap: 15px;
         }
 
-        /* --- Sidebars (Left and Right) --- */
         #left-sidebar, #right-sidebar {
             display: flex;
             flex-direction: column;
-            justify-content: space-between; /* Pushes images to spread out evenly */
+            justify-content: space-between;
             align-items: center;
-            height: 100%; /* Takes full height of the screen */
+            height: 100%; 
             width: 200px;
             flex-shrink: 0;
             gap: 10px;
         }
 
-        /* --- Clock --- */
         #datetime-box {
             background-color: rgba(0, 0, 0, 0.85); 
             color: #ffffff;
@@ -56,22 +52,19 @@
             color: #ffd700;
         }
 
-        /* --- Images --- */
         .side-image, .side-image-right {
             width: 100%;
             height: auto;
-            max-height: 28%; /* Ensures 3 images fit perfectly in the sidebar */
-            object-fit: cover; /* Crops the image nicely to fit the box */
+            max-height: 28%; 
+            object-fit: cover; 
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            /* Slide transition */
             transition: opacity 0.5s ease-in-out; 
         }
 
-        /* --- Middle (Calendar) --- */
         .container {
             position: relative;
-            height: 100%; /* Takes full height */
+            height: 100%; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -83,12 +76,11 @@
         
         .container img { 
             max-width: 100%;
-            max-height: 100%; /* Ensures the calendar never overflows the screen */
-            object-fit: contain; /* Keeps the aspect ratio of your calendar */
+            max-height: 100%; 
+            object-fit: contain; 
             display: block;
         }
 
-        /* Hide sidebars on smaller screens/phones to prevent breaking */
         @media (max-width: 1000px) {
             #left-sidebar, #right-sidebar { display: none; }
             .container { max-width: 100%; }
@@ -97,7 +89,6 @@
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR -->
     <div id="left-sidebar">
         <div id="datetime-box">
             <div class="nepali-date" id="nepaliDate">Loading...</div>
@@ -109,12 +100,10 @@
         <img id="leftImg3" class="side-image" src="god3.jpg" alt="">
     </div>
 
-    <!-- CALENDAR -->
     <div class="container">
         <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
     </div>
 
-    <!-- RIGHT SIDEBAR -->
     <div id="right-sidebar">
         <img id="rightImg1" class="side-image-right" src="god4.jpg" alt="">
         <img id="rightImg2" class="side-image-right" src="god5.jpg" alt="">
@@ -168,10 +157,15 @@
             };
         }
 
+        let lastSpokenMinute = -1; // Track the last minute we announced
+
         function updateCalendar() {
             const now = new Date();
             const nepaliInfo = getNepaliDateInfo(now);
+            const currentMinute = now.getMinutes();
+            const currentSecond = now.getSeconds();
 
+            // Update the visual text
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("englishDate").innerText = now.toLocaleDateString('en-US', options);
 
@@ -181,10 +175,36 @@
 
             document.getElementById("time").innerText = now.toLocaleTimeString('en-US');
 
+            // Update Calendar Image
             const newImageSrc = `${nepaliInfo.monthName}.jpeg`; 
             const imgElement = document.getElementById("calendarImage");
             if (!imgElement.src.includes(newImageSrc)) {
                 imgElement.src = newImageSrc;
+            }
+
+            // --- VOICE ANNOUNCEMENT LOGIC ---
+            // Check if it's a new minute (when seconds hit 0)
+            if (currentSecond === 0 && currentMinute !== lastSpokenMinute) {
+                lastSpokenMinute = currentMinute;
+                speakTime(now);
+            }
+        }
+
+        function speakTime(date) {
+            // Check if the browser supports speech synthesis
+            if ('speechSynthesis' in window) {
+                // Format the time (e.g., "12:05 PM")
+                const timeString = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+                
+                // Create the speech message
+                const utterance = new SpeechSynthesisUtterance(`The time is ${timeString}`);
+                
+                // Optional: Adjust voice speed and pitch
+                utterance.rate = 0.9; 
+                utterance.pitch = 1;
+
+                // Speak it!
+                window.speechSynthesis.speak(utterance);
             }
         }
 
@@ -195,7 +215,6 @@
             "god13.jpg", "god14.jpg", "god15.jpg", "god16.jpg", "god17.jpg", "god18.jpg"
         ];
         
-        // The fallback image in case your files are missing from GitHub
         const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
 
         function getRandomImage() {
@@ -213,24 +232,21 @@
             ];
 
             imgElements.forEach((img) => {
-                // Fade out
                 img.style.opacity = '0';
                 
-                // Change image after a tiny delay to allow fade out
                 setTimeout(() => {
                     img.src = getRandomImage();
                     img.onerror = function() {
                         this.onerror = null; 
                         this.src = fallbackImage; 
                     };
-                    // Fade back in
                     img.style.opacity = '1';
                 }, 500); 
             });
         }
 
         window.onload = function() {
-            // Start Clock
+            // Start Clock and update every second
             updateCalendar(); 
             setInterval(updateCalendar, 1000); 
             
