@@ -62,7 +62,6 @@
             background-color: #ffffff; 
             padding: 5px; 
             margin: auto; 
-            /* Hides the broken text name if the image completely fails */
             color: transparent;
             font-size: 0;
         }
@@ -233,9 +232,9 @@
             }
         }
 
-        // --- 2. AUTO-SLIDING IMAGES WITH FAILSAFE ---
+        // --- 2. AUTO-SLIDING IMAGES WITH ULTIMATE FAILSAFE ---
         
-        // 🔥 CHANGE THIS NUMBER: Put however many images you uploaded (e.g., 100)
+        // 🔥 CHANGE THIS NUMBER to match your highest image number
         const TOTAL_IMAGES = 100; 
         
         // Create the list of names without extensions
@@ -244,12 +243,11 @@
             imageNames.push(`god(${i})`);
         }
 
-        // Fallback image in case both JPG and PNG fail
+        // Beautiful fallback image (Lord Ganesha)
         const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
 
         function getRandomImage() {
             const randomName = imageNames[Math.floor(Math.random() * imageNames.length)];
-            // Return both possible paths. The browser will try JPG first, then PNG, then the fallback.
             return [`${randomName}.jpg`, `${randomName}.png`];
         }
 
@@ -275,7 +273,7 @@
                     // Step 2: If JPG fails, try PNG
                     img.onerror = function() {
                         this.onerror = function() {
-                            // Step 3: If PNG also fails, use Fallback
+                            // Step 3: If PNG also fails, use Fallback image
                             this.onerror = null; 
                             this.src = fallbackImage; 
                         };
