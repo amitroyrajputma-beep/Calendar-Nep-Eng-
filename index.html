@@ -10,8 +10,10 @@
             padding: 0; 
             height: 100vh; 
             overflow: hidden; 
-            background-color: #f0f0f0; 
+            /* 🌙 DARK BACKGROUND */
+            background-color: #121212; 
             font-family: Arial, sans-serif;
+            color: #ffffff;
         }
 
         body {
@@ -35,14 +37,16 @@
         }
 
         #datetime-box {
-            background-color: rgba(0, 0, 0, 0.85); 
+            /* Made the clock slightly lighter so it stands out on the dark background */
+            background-color: rgba(40, 40, 40, 0.95); 
             color: #ffffff;
             padding: 10px 15px;
             border-radius: 10px;
             font-size: 13px;
             line-height: 1.4;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6);
+            border: 1px solid #333;
             width: 100%;
             box-sizing: border-box;
         }
@@ -57,13 +61,16 @@
             height: 110px;      
             object-fit: contain; 
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            /* Darker shadow for images */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.6);
             transition: opacity 0.5s ease-in-out; 
-            background-color: #ffffff; 
+            /* Dark grey background for image frames */
+            background-color: #2a2a2a; 
             padding: 5px; 
             margin: auto; 
             color: transparent;
             font-size: 0;
+            border: 1px solid #444;
         }
 
         .container {
@@ -72,10 +79,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            background: white;
+            /* Dark shadow behind the calendar */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            /* Changed the calendar container background to dark */
+            background: #1e1e1e;
             flex-grow: 1;
             max-width: 700px;
+            border-radius: 10px;
+            overflow: hidden;
         }
         
         .container img { 
@@ -97,7 +108,7 @@
             font-weight: bold;
             cursor: pointer;
             z-index: 100;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         #audio-btn:hover { background-color: #ffed4a; }
 
@@ -232,9 +243,9 @@
             }
         }
 
-        // --- 2. AUTO-SLIDING IMAGES (Fixed to match your file names) ---
+        // --- 2. AUTO-SLIDING IMAGES WITH ULTIMATE FAILSAFE ---
         
-        // 🔥 CHANGE THIS NUMBER: Put however many images you uploaded (e.g., 100)
+        // 🔥 CHANGE THIS NUMBER to match your highest image number
         const TOTAL_IMAGES = 100; 
         
         // Create the list of names WITHOUT extensions
@@ -244,12 +255,11 @@
             imageNames.push(`god (${i})`);
         }
 
-        // Fallback image in case both JPG and PNG fail
+        // Beautiful fallback image (Lord Ganesha)
         const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
 
         function getRandomImage() {
             const randomName = imageNames[Math.floor(Math.random() * imageNames.length)];
-            // Return both possible paths. The browser will try JPG first, then PNG.
             return [`${randomName}.jpg`, `${randomName}.png`];
         }
 
@@ -275,7 +285,7 @@
                     // Step 2: If JPG fails, try PNG
                     img.onerror = function() {
                         this.onerror = function() {
-                            // Step 3: If PNG also fails, use Fallback
+                            // Step 3: If PNG also fails, use Fallback image
                             this.onerror = null; 
                             this.src = fallbackImage; 
                         };
