@@ -29,9 +29,9 @@
             justify-content: space-between;
             align-items: center;
             height: 100%; 
-            width: 200px;
+            width: 150px; /* Narrower sidebar */
             flex-shrink: 0;
-            gap: 10px;
+            gap: 15px;
         }
 
         #datetime-box {
@@ -52,15 +52,16 @@
             color: #ffd700;
         }
 
-        /* --- FIXED IMAGE STYLING --- */
+        /* --- FIXED SMALL IMAGE STYLING --- */
         .side-image, .side-image-right {
-            width: 100%;
-            aspect-ratio: 1 / 1; /* Forces all images to be perfect squares */
-            object-fit: cover;    /* Crops the image to fit the square perfectly */
-            border-radius: 10px;
+            width: 100px;       /* Fixed small size */
+            height: 100px;      /* Perfect square */
+            object-fit: cover;  /* Crops image to fit the square */
+            border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             transition: opacity 0.5s ease-in-out; 
             background-color: #ddd;
+            margin: auto; /* Centers them perfectly */
         }
 
         .container {
@@ -99,7 +100,7 @@
         }
         #audio-btn:hover { background-color: #ffed4a; }
 
-        @media (max-width: 1000px) {
+        @media (max-width: 900px) {
             #left-sidebar, #right-sidebar { display: none; }
             .container { max-width: 100%; }
         }
@@ -119,8 +120,7 @@
     </div>
 
     <div class="container">
-        <!-- The button you need to click to hear the time -->
-        <button id="audio-btn" onclick="startAudio()">🔊 Enable Voice Time</button>
+        <button id="audio-btn" onclick="startAudio()">🔊 Enable Voice</button>
         <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
     </div>
 
@@ -136,18 +136,11 @@
         
         function startAudio() {
             if ('speechSynthesis' in window) {
-                // Create a silent utterance just to "wake up" the audio engine
                 const silent = new SpeechSynthesisUtterance('');
                 window.speechSynthesis.speak(silent);
-                
                 audioEnabled = true;
-                document.getElementById("audio-btn").style.display = "none"; // Hide button
-                
-                // Announce immediately that it is working
-                setTimeout(() => {
-                    const now = new Date();
-                    speakTime(now);
-                }, 500);
+                document.getElementById("audio-btn").style.display = "none"; 
+                setTimeout(() => { speakTime(new Date()); }, 500);
             } else {
                 alert("Your browser does not support speech synthesis.");
             }
@@ -222,7 +215,6 @@
                 imgElement.src = newImageSrc;
             }
 
-            // Only speak if audio has been enabled by clicking the button
             if (audioEnabled && currentSecond === 0 && currentMinute !== lastSpokenMinute) {
                 lastSpokenMinute = currentMinute;
                 speakTime(now);
@@ -240,7 +232,6 @@
         }
 
         // --- 2. AUTO-SLIDING RANDOM IMAGES ---
-        // Make sure these match your actual files on GitHub!
         const allImages = [
             "god1.jpg", "god2.jpg", "god3.jpg", "god4.jpg", "god5.jpg", "god6.jpg",
             "god7.jpg", "god8.jpg", "god9.jpg", "god10.jpg", "god11.jpg", "god12.jpg",
