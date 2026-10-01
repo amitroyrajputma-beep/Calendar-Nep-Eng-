@@ -7,58 +7,129 @@
     <style>
         body { 
             margin: 0; 
-            padding: 0; 
+            padding: 20px; 
             background-color: #f0f0f0; 
             display: flex; 
             justify-content: center; 
-            align-items: center; 
+            align-items: flex-start; 
             min-height: 100vh; 
             font-family: Arial, sans-serif;
+            gap: 20px;
         }
+
+        /* --- Left Side (Clock & Random Images) --- */
+        #left-sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 150px;
+        }
+
+        /* The clock is now OUTSIDE the calendar container */
+        #datetime-box {
+            background-color: rgba(0, 0, 0, 0.8); 
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        #datetime-box .nepali-date {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        /* Random Sliding Images (Left) */
+        .side-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideInLeft 1s ease-out;
+        }
+
+        /* --- Middle (Calendar) --- */
         .container {
             position: relative;
             width: 100%;
             max-width: 600px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background: white;
         }
-        img { 
+        .container img { 
             width: 100%; 
             height: auto; 
             display: block;
         }
-        /* Style for the date and time box */
-        #datetime-box {
-            position: absolute;
-            top: 20px;    
-            left: 20px;   
-            background-color: rgba(0, 0, 0, 0.8); 
-            color: #ffffff;
-            padding: 12px 18px;
-            border-radius: 8px;
-            font-size: 16px;
-            line-height: 1.6;
-            text-align: left;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            z-index: 10; /* Ensures it stays on top of the image */
+
+        /* --- Right Side (Random Images) --- */
+        #right-sidebar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 150px;
         }
-        #datetime-box .nepali-date {
-            font-size: 20px;
-            font-weight: bold;
-            color: #ffd700; /* Gold color */
+
+        /* Random Sliding Images (Right) */
+        .side-image-right {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideInRight 1s ease-out;
+        }
+
+        /* --- Animations for Sliding --- */
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Hide sidebars on smaller phones so it doesn't break the layout */
+        @media (max-width: 900px) {
+            #left-sidebar, #right-sidebar {
+                display: none; 
+            }
+            body { padding: 0; }
         }
     </style>
 </head>
 <body>
 
+    <!-- LEFT SIDEBAR: Clock and Random Images -->
+    <div id="left-sidebar">
+        <div id="datetime-box">
+            <div class="nepali-date" id="nepaliDate">Loading...</div>
+            <div id="englishDate">Loading...</div>
+            <div id="time">Loading...</div>
+        </div>
+        <!-- These images will be swapped by JavaScript -->
+        <img id="leftImg1" class="side-image" src="god1.jpg" alt="God 1">
+        <img id="leftImg2" class="side-image" src="god2.jpg" alt="God 2">
+        <img id="leftImg3" class="side-image" src="god3.jpg" alt="God 3">
+    </div>
+
+    <!-- MIDDLE: Your Calendar -->
     <div class="container">
         <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
-        
-        <!-- This is the box that will show the date and time -->
-        <div id="datetime-box">
-            <div class="nepali-date" id="nepaliDate">Loading Nepali Date...</div>
-            <div id="englishDate">Loading English Date...</div>
-            <div id="time">Loading Time...</div>
-        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR: Random Images -->
+    <div id="right-sidebar">
+        <img id="rightImg1" class="side-image-right" src="goddess1.jpg" alt="Goddess 1">
+        <img id="rightImg2" class="side-image-right" src="goddess2.jpg" alt="Goddess 2">
+        <img id="rightImg3" class="side-image-right" src="goddess3.jpg" alt="Goddess 3">
     </div>
 
     <script>
@@ -83,14 +154,11 @@
         const nepaliDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
 
         function getNepaliDateInfo(date) {
-            // Normalize the time to midnight for accurate comparison
             const currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
             let nepaliYear = 2083;
             let nepaliMonthIndex = 0;
             let nepaliDay = 1;
 
-            // Loop through the data to find which month today falls into
             for (let i = 0; i < nepaliYearData[2083].length; i++) {
                 const monthData = nepaliYearData[2083][i];
                 const startDate = new Date(monthData.start);
@@ -98,14 +166,12 @@
 
                 if (currentDate >= startDate && currentDate <= endDate) {
                     nepaliMonthIndex = i;
-                    // Calculate the Nepali day
                     const diffTime = currentDate - startDate;
                     const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
                     nepaliDay = diffDays + 1; 
                     break;
                 }
             }
-
             return {
                 monthName: nepaliYearData[2083][nepaliMonthIndex].name,
                 day: nepaliDay,
@@ -117,31 +183,51 @@
             const now = new Date();
             const nepaliInfo = getNepaliDateInfo(now);
 
-            // 1. UPDATE ENGLISH DATE
+            // Update English Date
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("englishDate").innerText = now.toLocaleDateString('en-US', options);
 
-            // 2. UPDATE NEPALI DATE
+            // Update Nepali Date
             let nepaliDayStr = nepaliInfo.day.toString().split('').map(num => nepaliDigits[num]).join('');
             let nepaliYearStr = nepaliInfo.year.toString().split('').map(num => nepaliDigits[num]).join('');
             document.getElementById("nepaliDate").innerText = `${nepaliInfo.monthName} ${nepaliDayStr}, ${nepaliYearStr}`;
 
-            // 3. UPDATE TIME
+            // Update Time
             document.getElementById("time").innerText = now.toLocaleTimeString('en-US');
 
-            // 4. UPDATE IMAGE
+            // Update Calendar Image
             const newImageSrc = `${nepaliInfo.monthName}.jpeg`; 
             const imgElement = document.getElementById("calendarImage");
-            
             if (!imgElement.src.includes(newImageSrc)) {
                 imgElement.src = newImageSrc;
             }
         }
 
-        // Ensure the HTML is fully loaded before running the script
+        // --- 2. RANDOM SLIDING IMAGES ---
+        function loadRandomImages() {
+            // You can add as many image names as you want in these arrays
+            const godImages = ["god1.jpg", "god2.jpg", "god3.jpg", "god4.jpg"];
+            const goddessImages = ["goddess1.jpg", "goddess2.jpg", "goddess3.jpg", "goddess4.jpg"];
+
+            // Function to pick a random image from an array
+            const getRandomImage = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+            // Set the left images (Gods)
+            document.getElementById("leftImg1").src = getRandomImage(godImages);
+            document.getElementById("leftImg2").src = getRandomImage(godImages);
+            document.getElementById("leftImg3").src = getRandomImage(godImages);
+
+            // Set the right images (Goddesses)
+            document.getElementById("rightImg1").src = getRandomImage(goddessImages);
+            document.getElementById("rightImg2").src = getRandomImage(goddessImages);
+            document.getElementById("rightImg3").src = getRandomImage(goddessImages);
+        }
+
+        // Run everything when the page loads
         window.onload = function() {
-            updateCalendar(); // Run immediately
-            setInterval(updateCalendar, 1000); // Update every second
+            updateCalendar(); 
+            setInterval(updateCalendar, 1000); 
+            loadRandomImages(); // Load the random images once on startup
         };
 
     </script>
