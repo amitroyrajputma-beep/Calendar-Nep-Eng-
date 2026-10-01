@@ -1,37 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Nepali Calendar</title>
-    <style>
-        body { margin: 0; padding: 0; background-color: #f0f0f0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        img { width: 100%; max-width: 600px; height: auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    </style>
-</head>
-<body>
-    <img id="calendarImage" src="1.jpg" alt="Current Month Calendar">
-
-    <script>
-        // Get current month (0 = Jan, 11 = Dec)
-        const monthIndex = new Date().getMonth(); 
         // Map JavaScript months to your image numbers
         const imageMap = {
-            0: "1.jpg",   // January -> Magh
-            1: "2.jpg",   // February -> Falgun
-            2: "3.jpg",   // March -> Chaitra
-            3: "4.jpg",   // April -> Baisakh
-            4: "5.jpg",   // May -> Jestha
-            5: "6.jpg",   // June -> Ashadh
-            6: "7.jpg",   // July -> Shrawan
-            7: "8.jpg",   // August -> Bhadra
-            8: "9.jpg",   // September -> Ashwin
-            9: "10.jpg",  // October -> Kartik
-            10: "11.jpg", // November -> Mangsir
-            11: "12.jpg"  // December -> Poush
+            0: "1.jpeg",   // January -> Magh
+            1: "2.jpeg",   // February -> Falgun
+            2: "3.jpeg",   // March -> Chaitra
+            3: "4.jpeg",   // April -> Baisakh
+            4: "5.jpeg",   // May -> Jestha
+            5: "6.jpeg",   // June -> Ashadh
+            6: "7.jpeg",   // July -> Shrawan
+            7: "8.jpeg",   // August -> Bhadra
+            8: "9.jpeg",   // September -> Ashwin
+            9: "10.jpeg",  // October -> Kartik
+            10: "11.jpeg", // November -> Mangsir
+            11: "12.jpeg"  // December -> Poush
         };
 
         document.getElementById("calendarImage").src = imageMap[monthIndex];
-    </script>
-</body>
-</html>
