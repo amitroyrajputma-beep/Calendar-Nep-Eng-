@@ -12,7 +12,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            height: 100vh; 
+            min-height: 100vh; 
             font-family: Arial, sans-serif;
         }
         .container {
@@ -31,7 +31,7 @@
             position: absolute;
             top: 20px;    
             left: 20px;   
-            background-color: rgba(0, 0, 0, 0.75); 
+            background-color: rgba(0, 0, 0, 0.8); 
             color: #ffffff;
             padding: 12px 18px;
             border-radius: 8px;
@@ -39,18 +39,18 @@
             line-height: 1.6;
             text-align: left;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            z-index: 10; /* Ensures it stays on top of the image */
         }
         #datetime-box .nepali-date {
             font-size: 20px;
             font-weight: bold;
-            color: #ffd700; /* Gold color for Nepali date */
+            color: #ffd700; /* Gold color */
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- The source will be updated by JavaScript -->
         <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
         
         <!-- This is the box that will show the date and time -->
@@ -63,8 +63,6 @@
 
     <script>
         // --- 1. ACCURATE NEPALI DATE DATA (2083 BS) ---
-        // This tells the code EXACTLY when every Nepali month starts and ends.
-        // Based on your calendar images.
         const nepaliYearData = {
             2083: [
                 { name: "Baisakh", start: "2026-04-14", end: "2026-05-14" },
@@ -72,7 +70,7 @@
                 { name: "Ashadh",  start: "2026-06-15", end: "2026-07-16" },
                 { name: "Shrawan", start: "2026-07-17", end: "2026-08-16" },
                 { name: "Bhadra",  start: "2026-08-17", end: "2026-09-16" },
-                { name: "Ashwin",  start: "2026-09-17", end: "2026-10-17" }, // <-- Today (Oct 1) falls here!
+                { name: "Ashwin",  start: "2026-09-17", end: "2026-10-17" },
                 { name: "Kartik",  start: "2026-10-18", end: "2026-11-16" },
                 { name: "Mangsir", start: "2026-11-17", end: "2026-12-16" },
                 { name: "Poush",   start: "2026-12-17", end: "2027-01-16" },
@@ -85,10 +83,8 @@
         const nepaliDigits = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
 
         function getNepaliDateInfo(date) {
-            const y = date.getFullYear();
-            const m = date.getMonth();
-            const d = date.getDate();
-            const currentDate = new Date(y, m, d); // Remove time for accurate comparison
+            // Normalize the time to midnight for accurate comparison
+            const currentDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
             let nepaliYear = 2083;
             let nepaliMonthIndex = 0;
@@ -102,11 +98,10 @@
 
                 if (currentDate >= startDate && currentDate <= endDate) {
                     nepaliMonthIndex = i;
-                    
-                    // Calculate the Nepali day by finding the difference in days
-                    const diffTime = Math.abs(currentDate - startDate);
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    nepaliDay = diffDays + 1; // +1 because start date is Day 1
+                    // Calculate the Nepali day
+                    const diffTime = currentDate - startDate;
+                    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+                    nepaliDay = diffDays + 1; 
                     break;
                 }
             }
@@ -118,37 +113,36 @@
             };
         }
 
-        // --- 2. LIVE CLOCK AND IMAGE UPDATER ---
         function updateCalendar() {
             const now = new Date();
-            
-            // Get accurate Nepali info
             const nepaliInfo = getNepaliDateInfo(now);
 
-            // 1. UPDATE DATE AND TIME TEXT
+            // 1. UPDATE ENGLISH DATE
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById("englishDate").innerText = now.toLocaleDateString('en-US', options);
 
-            // Convert numbers to Nepali digits
+            // 2. UPDATE NEPALI DATE
             let nepaliDayStr = nepaliInfo.day.toString().split('').map(num => nepaliDigits[num]).join('');
             let nepaliYearStr = nepaliInfo.year.toString().split('').map(num => nepaliDigits[num]).join('');
-            
             document.getElementById("nepaliDate").innerText = `${nepaliInfo.monthName} ${nepaliDayStr}, ${nepaliYearStr}`;
+
+            // 3. UPDATE TIME
             document.getElementById("time").innerText = now.toLocaleTimeString('en-US');
 
-            // 2. UPDATE IMAGE BASED ON THE EXACT NEPALI MONTH
+            // 4. UPDATE IMAGE
             const newImageSrc = `${nepaliInfo.monthName}.jpeg`; 
             const imgElement = document.getElementById("calendarImage");
             
-            // Change image if it's different
             if (!imgElement.src.includes(newImageSrc)) {
                 imgElement.src = newImageSrc;
             }
         }
 
-        // Run immediately and update every second
-        updateCalendar();
-        setInterval(updateCalendar, 1000);
+        // Ensure the HTML is fully loaded before running the script
+        window.onload = function() {
+            updateCalendar(); // Run immediately
+            setInterval(updateCalendar, 1000); // Update every second
+        };
 
     </script>
 </body>
