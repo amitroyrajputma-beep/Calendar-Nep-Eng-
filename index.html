@@ -62,6 +62,9 @@
             background-color: #ffffff; 
             padding: 5px; 
             margin: auto; 
+            /* Hides the broken text name if the image completely fails */
+            color: transparent;
+            font-size: 0;
         }
 
         .container {
@@ -230,7 +233,7 @@
             }
         }
 
-        // --- 2. AUTO-SLIDING IMAGES (Handles BOTH .jpg and .png) ---
+        // --- 2. AUTO-SLIDING IMAGES WITH FAILSAFE ---
         
         // 🔥 CHANGE THIS NUMBER: Put however many images you uploaded (e.g., 100)
         const TOTAL_IMAGES = 100; 
@@ -241,10 +244,12 @@
             imageNames.push(`god(${i})`);
         }
 
+        // Fallback image in case both JPG and PNG fail
+        const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
+
         function getRandomImage() {
-            // Pick a random name from the list
             const randomName = imageNames[Math.floor(Math.random() * imageNames.length)];
-            // Return both possible paths. The browser will try JPG first, then PNG.
+            // Return both possible paths. The browser will try JPG first, then PNG, then the fallback.
             return [`${randomName}.jpg`, `${randomName}.png`];
         }
 
@@ -264,12 +269,16 @@
                 setTimeout(() => {
                     const paths = getRandomImage();
                     
-                    // Set the first attempt (JPG)
+                    // Step 1: Try JPG
                     img.src = paths[0]; 
                     
-                    // If JPG fails, try PNG
+                    // Step 2: If JPG fails, try PNG
                     img.onerror = function() {
-                        this.onerror = null; // Prevent infinite loops
+                        this.onerror = function() {
+                            // Step 3: If PNG also fails, use Fallback
+                            this.onerror = null; 
+                            this.src = fallbackImage; 
+                        };
                         this.src = paths[1]; 
                     };
                     
