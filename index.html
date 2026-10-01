@@ -5,94 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Nepali Calendar</title>
     <style>
-        body { 
+        /* Reset margins and lock the screen to prevent scrolling */
+        html, body { 
             margin: 0; 
-            padding: 20px; 
+            padding: 0; 
+            height: 100vh; 
+            overflow: hidden; /* Hides the scrollbar */
             background-color: #f0f0f0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: flex-start; 
-            min-height: 100vh; 
             font-family: Arial, sans-serif;
-            gap: 20px;
         }
 
-        /* --- Left Side (Clock & Random Images) --- */
-        #left-sidebar {
+        /* Main Layout */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            gap: 15px;
+        }
+
+        /* --- Sidebars (Left and Right) --- */
+        #left-sidebar, #right-sidebar {
             display: flex;
             flex-direction: column;
+            justify-content: space-between; /* Pushes images to spread out evenly */
             align-items: center;
-            gap: 15px;
-            width: 220px;
+            height: 100%; /* Takes full height of the screen */
+            width: 200px;
             flex-shrink: 0;
+            gap: 10px;
         }
 
+        /* --- Clock --- */
         #datetime-box {
             background-color: rgba(0, 0, 0, 0.85); 
             color: #ffffff;
-            padding: 15px;
+            padding: 10px 15px;
             border-radius: 10px;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 13px;
+            line-height: 1.4;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.4);
             width: 100%;
             box-sizing: border-box;
         }
         #datetime-box .nepali-date {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #ffd700;
         }
 
-        /* Random Sliding Images */
+        /* --- Images --- */
         .side-image, .side-image-right {
             width: 100%;
             height: auto;
+            max-height: 28%; /* Ensures 3 images fit perfectly in the sidebar */
+            object-fit: cover; /* Crops the image nicely to fit the box */
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            animation: slideIn 1s ease-out;
-            /* This hides the text if the image is missing */
-            color: transparent; 
-            font-size: 0;
-            min-height: 150px; /* Keeps the space open while loading */
-            background-color: #ddd;
+            /* Slide transition */
+            transition: opacity 0.5s ease-in-out; 
         }
 
         /* --- Middle (Calendar) --- */
         .container {
             position: relative;
-            width: 100%;
-            max-width: 650px; 
+            height: 100%; /* Takes full height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             background: white;
-            flex-shrink: 0;
+            flex-grow: 1;
+            max-width: 700px;
         }
+        
         .container img { 
-            width: 100%; 
-            height: auto; 
+            max-width: 100%;
+            max-height: 100%; /* Ensures the calendar never overflows the screen */
+            object-fit: contain; /* Keeps the aspect ratio of your calendar */
             display: block;
         }
 
-        /* --- Right Side --- */
-        #right-sidebar {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            width: 220px;
-            flex-shrink: 0;
-        }
-
-        /* --- Animations --- */
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @media (max-width: 1100px) {
+        /* Hide sidebars on smaller screens/phones to prevent breaking */
+        @media (max-width: 1000px) {
             #left-sidebar, #right-sidebar { display: none; }
-            body { padding: 0; }
+            .container { max-width: 100%; }
         }
     </style>
 </head>
@@ -189,54 +188,57 @@
             }
         }
 
-        // --- 2. RANDOM SLIDING IMAGES ---
-        function loadRandomImages() {
-            // Check all possible variations of names (.jpg, .jpeg, .png)
-            // You can add more names here if you have more images on GitHub
-            const godImages = [
-                "god1.jpg", "god2.jpg", "god3.jpg", "god4.jpg", "god5.jpg", "god6.jpg",
-                "god7.jpg", "god8.jpg", "god9.jpg", "god10.jpg", "god11.jpg", "god12.jpg",
-                "god13.jpg", "god14.jpg", "god15.jpg", "god16.jpg", "god17.jpg", "god18.jpg"
+        // --- 2. AUTO-SLIDING RANDOM IMAGES ---
+        const allImages = [
+            "god1.jpg", "god2.jpg", "god3.jpg", "god4.jpg", "god5.jpg", "god6.jpg",
+            "god7.jpg", "god8.jpg", "god9.jpg", "god10.jpg", "god11.jpg", "god12.jpg",
+            "god13.jpg", "god14.jpg", "god15.jpg", "god16.jpg", "god17.jpg", "god18.jpg"
+        ];
+        
+        // The fallback image in case your files are missing from GitHub
+        const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
+
+        function getRandomImage() {
+            return allImages[Math.floor(Math.random() * allImages.length)];
+        }
+
+        function changeImages() {
+            const imgElements = [
+                document.getElementById("leftImg1"),
+                document.getElementById("leftImg2"),
+                document.getElementById("leftImg3"),
+                document.getElementById("rightImg1"),
+                document.getElementById("rightImg2"),
+                document.getElementById("rightImg3")
             ];
 
-            // Fallback image from the internet (in case your local files are missing)
-            const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
-
-            const getRandomImage = () => {
-                const randomImg = godImages[Math.floor(Math.random() * godImages.length)];
-                return randomImg;
-            };
-
-            // Set images
-            const img1 = document.getElementById("leftImg1");
-            const img2 = document.getElementById("leftImg2");
-            const img3 = document.getElementById("leftImg3");
-            const img4 = document.getElementById("rightImg1");
-            const img5 = document.getElementById("rightImg2");
-            const img6 = document.getElementById("rightImg3");
-
-            // Apply random images. If the file isn't found, the browser will show the fallback.
-            // (Note: We add a small onerror function so if the local file is missing, it shows a nice default)
-            const applyImage = (element) => {
-                element.src = getRandomImage();
-                element.onerror = function() {
-                    this.onerror = null; // Prevent infinite loop
-                    this.src = fallbackImage; // Load fallback image
-                };
-            };
-
-            applyImage(img1);
-            applyImage(img2);
-            applyImage(img3);
-            applyImage(img4);
-            applyImage(img5);
-            applyImage(img6);
+            imgElements.forEach((img) => {
+                // Fade out
+                img.style.opacity = '0';
+                
+                // Change image after a tiny delay to allow fade out
+                setTimeout(() => {
+                    img.src = getRandomImage();
+                    img.onerror = function() {
+                        this.onerror = null; 
+                        this.src = fallbackImage; 
+                    };
+                    // Fade back in
+                    img.style.opacity = '1';
+                }, 500); 
+            });
         }
 
         window.onload = function() {
+            // Start Clock
             updateCalendar(); 
             setInterval(updateCalendar, 1000); 
-            loadRandomImages(); 
+            
+            // Load images initially
+            changeImages();
+            
+            // Automatically slide/change images every 4 seconds
+            setInterval(changeImages, 4000);
         };
     </script>
 </body>
