@@ -29,7 +29,7 @@
             justify-content: space-between;
             align-items: center;
             height: 100%; 
-            width: 150px; /* Narrower sidebar */
+            width: 150px; 
             flex-shrink: 0;
             gap: 15px;
         }
@@ -52,16 +52,17 @@
             color: #ffd700;
         }
 
-        /* --- FIXED SMALL IMAGE STYLING --- */
+        /* --- FIXED FULL IMAGE STYLING --- */
         .side-image, .side-image-right {
-            width: 100px;       /* Fixed small size */
-            height: 100px;      /* Perfect square */
-            object-fit: cover;  /* Crops image to fit the square */
+            width: 110px;       
+            height: 110px;      
+            object-fit: contain; /* Shows the FULL image, no cropping! */
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             transition: opacity 0.5s ease-in-out; 
-            background-color: #ddd;
-            margin: auto; /* Centers them perfectly */
+            background-color: #ffffff; /* White background behind the image */
+            padding: 5px; /* Small border so it looks like a neat frame */
+            margin: auto; 
         }
 
         .container {
@@ -83,7 +84,6 @@
             display: block;
         }
 
-        /* --- AUDIO PERMISSION BUTTON --- */
         #audio-btn {
             position: absolute;
             top: 10px;
@@ -114,9 +114,9 @@
             <div id="englishDate">Loading...</div>
             <div id="time">Loading...</div>
         </div>
-        <img id="leftImg1" class="side-image" src="god1.jpg" alt="">
-        <img id="leftImg2" class="side-image" src="god2.jpg" alt="">
-        <img id="leftImg3" class="side-image" src="god3.jpg" alt="">
+        <img id="leftImg1" class="side-image" src="" alt="">
+        <img id="leftImg2" class="side-image" src="" alt="">
+        <img id="leftImg3" class="side-image" src="" alt="">
     </div>
 
     <div class="container">
@@ -125,9 +125,9 @@
     </div>
 
     <div id="right-sidebar">
-        <img id="rightImg1" class="side-image-right" src="god4.jpg" alt="">
-        <img id="rightImg2" class="side-image-right" src="god5.jpg" alt="">
-        <img id="rightImg3" class="side-image-right" src="god6.jpg" alt="">
+        <img id="rightImg1" class="side-image-right" src="" alt="">
+        <img id="rightImg2" class="side-image-right" src="" alt="">
+        <img id="rightImg3" class="side-image-right" src="" alt="">
     </div>
 
     <script>
@@ -231,17 +231,19 @@
             }
         }
 
-        // --- 2. AUTO-SLIDING RANDOM IMAGES ---
-        const allImages = [
-            "god1.jpg", "god2.jpg", "god3.jpg", "god4.jpg", "god5.jpg", "god6.jpg",
-            "god7.jpg", "god8.jpg", "god9.jpg", "god10.jpg", "god11.jpg", "god12.jpg",
-            "god13.jpg", "god14.jpg", "god15.jpg", "god16.jpg", "god17.jpg", "god18.jpg"
+        // --- 2. AUTO-SLIDING RANDOM IMAGES (High-Quality Internet Links) ---
+        // No need to upload images to GitHub. These are reliable links to HD images.
+        const imageLinks = [
+            "https://images.unsplash.com/photo-1568214379698-8a1379e2f364?w=200&h=200&fit=crop", // Ganesha
+            "https://images.unsplash.com/photo-1601476739477-8654a1d79a80?w=200&h=200&fit=crop", // Shiva
+            "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?w=200&h=200&fit=crop", // Krishna
+            "https://images.unsplash.com/photo-1627892291879-270410cb1162?w=200&h=200&fit=crop", // Durga
+            "https://images.unsplash.com/photo-1582562124811-c09040d0a901?w=200&h=200&fit=crop", // Hanuman
+            "https://images.unsplash.com/photo-1570531425666-3881727109c0?w=200&h=200&fit=crop"  // Lakshmi
         ];
-        
-        const fallbackImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Lord_Ganesha.jpg/400px-Lord_Ganesha.jpg";
 
         function getRandomImage() {
-            return allImages[Math.floor(Math.random() * allImages.length)];
+            return imageLinks[Math.floor(Math.random() * imageLinks.length)];
         }
 
         function changeImages() {
@@ -259,10 +261,6 @@
                 
                 setTimeout(() => {
                     img.src = getRandomImage();
-                    img.onerror = function() {
-                        this.onerror = null; 
-                        this.src = fallbackImage; 
-                    };
                     img.style.opacity = '1';
                 }, 500); 
             });
