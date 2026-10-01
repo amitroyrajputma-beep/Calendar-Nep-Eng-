@@ -14,56 +14,31 @@
             padding: 15px; box-sizing: border-box; gap: 15px;
         }
         
-        /* --- SIDEBARS (Only 1 image each now) --- */
         #left-sidebar, #right-sidebar {
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; /* Center the image vertically */
-            align-items: center; 
-            height: 100%; 
-            width: 220px; /* Made wider to fit the bigger clock */
-            flex-shrink: 0; 
-            gap: 20px;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; height: 100%; width: 220px; 
+            flex-shrink: 0; gap: 20px;
         }
 
-        /* --- CLOCK (Made double size) --- */
         #datetime-box {
-            background-color: rgba(40, 40, 40, 0.95); 
-            color: #ffffff; 
-            padding: 20px; /* Doubled padding */
-            border-radius: 15px; 
-            font-size: 22px; /* Doubled font size */
-            line-height: 1.5; 
-            text-align: center;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.8); 
-            border: 1px solid #444;
-            width: 100%; 
-            box-sizing: border-box;
+            background-color: rgba(40, 40, 40, 0.95); color: #ffffff; 
+            padding: 20px; border-radius: 15px; font-size: 22px; 
+            line-height: 1.5; text-align: center;
+            box-shadow: 0 6px 10px rgba(0,0,0,0.8); border: 1px solid #444;
+            width: 100%; box-sizing: border-box;
         }
         #datetime-box .nepali-date {
-            font-size: 32px; /* Doubled Nepali date size */
-            font-weight: bold; 
-            color: #ffd700;
-            margin-bottom: 10px;
+            font-size: 32px; font-weight: bold; color: #ffd700; margin-bottom: 10px;
         }
 
-        /* --- LARGE SINGLE IMAGE STYLING --- */
         .side-image, .side-image-right {
-            width: 180px;       /* Large size */
-            height: 180px;      /* Perfect square */
-            object-fit: contain; 
-            border-radius: 12px;
-            box-shadow: 0 6px 10px rgba(0,0,0,0.7); 
-            transition: opacity 0.5s ease-in-out; 
-            background-color: #2a2a2a; 
-            padding: 10px; 
-            margin: auto; 
-            color: transparent; 
-            font-size: 0; 
-            border: 2px solid #444;
+            width: 180px; height: 180px; object-fit: contain; 
+            border-radius: 12px; box-shadow: 0 6px 10px rgba(0,0,0,0.7); 
+            transition: opacity 0.5s ease-in-out; background-color: #2a2a2a; 
+            padding: 10px; margin: auto; color: transparent; 
+            font-size: 0; border: 2px solid #444;
         }
 
-        /* --- MIDDLE CALENDAR --- */
         .container {
             position: relative; height: 100%; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
@@ -75,20 +50,18 @@
             max-width: 100%; max-height: 85%; object-fit: contain; display: block;
         }
         
-        /* --- CONTROLS --- */
         .controls-container {
             display: flex; gap: 10px; width: 100%; margin-top: 10px;
             justify-content: center; align-items: center;
         }
-        #audio-btn, #fm-toggle-btn, .station-btn {
+        #audio-btn, #fm-toggle-btn {
             background-color: #ffd700; color: #000; border: none; padding: 8px 15px;
             border-radius: 5px; font-weight: bold; cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.5); transition: background 0.3s;
         }
-        #audio-btn:hover, #fm-toggle-btn:hover, .station-btn:hover { 
-            background-color: #ffed4a; 
-        }
-        .station-btn.active { background-color: #4caf50; color: white; }
+        #audio-btn:hover, #fm-toggle-btn:hover { background-color: #ffed4a; }
+
+        /* --- FM PLAYER BOX --- */
         #fm-player-box {
             display: none; background-color: #2a2a2a; border: 1px solid #444;
             border-radius: 8px; padding: 10px; width: 100%; box-sizing: border-box;
@@ -97,13 +70,25 @@
         #fm-player-box h3 {
             margin: 0; font-size: 14px; color: #ffd700; text-align: center;
         }
-        .station-selection {
-            display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;
+        
+        /* --- THE DROPDOWN MENU --- */
+        .station-dropdown {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: #444;
+            color: #fff;
+            border: 1px solid #666;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
         }
-        .station-btn {
-            font-size: 11px; padding: 5px 10px; background-color: #444; color: #ccc;
+        .station-dropdown option {
+            background-color: #2a2a2a;
+            color: #fff;
         }
-        .station-btn.active { background-color: #ffd700; color: #000; }
+
         audio { width: 100%; height: 30px; border-radius: 5px; outline: none; }
         
         @media (max-width: 900px) {
@@ -115,7 +100,6 @@
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR: Clock + 1 Image -->
     <div id="left-sidebar">
         <div id="datetime-box">
             <div class="nepali-date" id="nepaliDate">Loading...</div>
@@ -125,27 +109,41 @@
         <img id="leftImg1" class="side-image" src="" alt="">
     </div>
 
-    <!-- MIDDLE: Calendar -->
     <div class="container">
         <img id="calendarImage" src="Ashwin.jpeg" alt="Current Month Calendar">
         <div class="controls-container">
             <button id="audio-btn" onclick="startAudio()">🔊 Enable Voice</button>
             <button id="fm-toggle-btn" onclick="toggleFMPlayer()">📻 Play FM Radio</button>
         </div>
+        
+        <!-- The FM Player with Dropdown -->
         <div id="fm-player-box">
             <h3>📻 Live FM Radio</h3>
-            <div class="station-selection">
-                <button class="station-btn active" onclick="selectStation('nepali')">🇳🇵 Nepali FM</button>
-                <button class="station-btn" onclick="selectStation('indian')">🇮🇳 Indian FM</button>
-            </div>
+            
+            <!-- DROPDOWN MENU FOR STATIONS -->
+            <select id="stationSelect" class="station-dropdown" onchange="changeStation()">
+                <optgroup label="🇳🇵 Nepali FM Stations">
+                    <option value="https://stream.zeno.fm/0r0xa792kwzuv">Radio Kantipur 96.1</option>
+                    <option value="https://stream.zeno.fm/m3q5v4dvyc9uv">Radio City Kannada</option>
+                    <option value="https://stream.zeno.fm/0r0xa792kwzuv">Grace FM 107.6</option>
+                    <option value="https://stream.zeno.fm/0r0xa792kwzuv">Jayaprithvi F.M.</option>
+                    <option value="https://stream.rcast.net/66224">Swadesh FM</option>
+                    <option value="https://stream.zeno.fm/0r0xa792kwzuv">Radio Nepal</option>
+                </optgroup>
+                <optgroup label="🇮🇳 Indian FM Stations">
+                    <option value="http://stream.radiobollyfm.in:8201/">Bolly FM</option>
+                    <option value="http://stream.zeno.fm/m3q5v4dvyc9uv">Fnf.Fm Hindi</option>
+                    <option value="https://stream.zeno.fm/0r0xa792kwzuv">Divine FM India</option>
+                </optgroup>
+            </select>
+            
             <audio id="fmAudio" controls>
-                <source src="https://stream.zeno.fm/0r0xa792kwzuv" type="audio/mpeg">
+                <source src="" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
         </div>
     </div>
 
-    <!-- RIGHT SIDEBAR: 1 Image -->
     <div id="right-sidebar">
         <img id="rightImg1" class="side-image-right" src="" alt="">
     </div>
@@ -153,31 +151,6 @@
     <script>
         // --- 0. AUDIO & FM PLAYER LOGIC ---
         let audioEnabled = false;
-        const stationLists = {
-            nepali: [
-                { name: "Radio Kantipur 96.1", url: "http://broadcast.radiokantipur.com:7248/stream" },
-                { name: "Radio City Kannada", url: "https://stream.zeno.fm/m3q5v4dvyc9uv" },
-                { name: "Grace FM 107.6", url: "https://stream.zeno.fm/0r0xa792kwzuv" },
-                { name: "Jayaprithvi F.M.", url: "https://stream.zeno.fm/0r0xa792kwzuv" },
-                { name: "Swadesh FM", url: "https://stream.rcast.net/66224" },
-                { name: "Radio Nepal", url: "https://stream.zeno.fm/0r0xa792kwzuv" }
-            ],
-            indian: [
-                { name: "Bolly FM", url: "http://stream.radiobollyfm.in:8201/" },
-                { name: "Fnf.Fm Hindi", url: "http://stream.zeno.fm/m3q5v4dvyc9uv" },
-                { name: "Divine FM India", url: "https://stream.zeno.fm/0r0xa792kwzuv" }
-            ]
-        };
-        let currentStationList = "nepali";
-
-        function selectStation(listName) {
-            currentStationList = listName;
-            document.querySelectorAll(".station-btn").forEach(btn => btn.classList.remove("active"));
-            document.querySelector(`.station-btn[onclick*="${listName}"]`).classList.add("active");
-            const playerBox = document.getElementById("fm-player-box");
-            playerBox.style.display = "none";
-            toggleFMPlayer();
-        }
 
         function startAudio() {
             if ('speechSynthesis' in window) {
@@ -191,18 +164,32 @@
             }
         }
 
+        // Toggle the FM player open/close
         function toggleFMPlayer() {
             const playerBox = document.getElementById("fm-player-box");
             const audioElement = document.getElementById("fmAudio");
+            const stationSelect = document.getElementById("stationSelect");
+
             if (playerBox.style.display === "none" || playerBox.style.display === "") {
-                const stations = stationLists[currentStationList];
-                const randomStation = stations[Math.floor(Math.random() * stations.length)];
-                audioElement.src = randomStation.url;
+                // Set the initial source to the first station in the dropdown
+                audioElement.src = stationSelect.value;
                 playerBox.style.display = "flex";
-                audioElement.play().catch(e => console.log("Autoplay blocked by browser"));
+                audioElement.play().catch(e => console.log("Autoplay blocked. Please press play."));
             } else {
                 playerBox.style.display = "none";
                 audioElement.pause();
+            }
+        }
+
+        // Change the station when the user selects a different one from the dropdown
+        function changeStation() {
+            const stationSelect = document.getElementById("stationSelect");
+            const audioElement = document.getElementById("fmAudio");
+            
+            // Only change the audio if the player is currently open
+            if (document.getElementById("fm-player-box").style.display === "flex") {
+                audioElement.src = stationSelect.value;
+                audioElement.play().catch(e => console.log("Error playing station"));
             }
         }
 
@@ -268,7 +255,7 @@
             }
         }
 
-        // --- 2. AUTO-SLIDING IMAGES (Only 1 Left, 1 Right) ---
+        // --- 2. AUTO-SLIDING IMAGES (1 Left, 1 Right) ---
         const TOTAL_IMAGES = 100; 
         const imageNames = [];
         for (let i = 1; i <= TOTAL_IMAGES; i++) imageNames.push(`god (${i})`);
@@ -280,7 +267,6 @@
         }
         
         function changeImages() {
-            // Only targeting the ONE image on each side now
             const imgElements = [ 
                 document.getElementById("leftImg1"), 
                 document.getElementById("rightImg1")
@@ -301,7 +287,7 @@
         
         window.onload = function() {
             updateCalendar(); setInterval(updateCalendar, 1000); 
-            changeImages(); setInterval(changeImages, 5000); // Slides a new image every 5 seconds
+            changeImages(); setInterval(changeImages, 5000); 
         };
     </script>
 </body>
